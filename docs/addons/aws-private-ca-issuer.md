@@ -6,11 +6,11 @@
 
 ### Pre-requisites
 
-To deploy the AWS PCA, you need to install cert-manager first, refer to this [documentation](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/docs/cert-manager.md) to do it through EKS Blueprints Addons.
+To deploy the AWS PCA, you need to install cert-manager first, refer to this [documentation](https://github.com/aws-blueprints/terraform-aws-eks-blueprints-addons/docs/cert-manager.md) to do it through EKS Blueprints Addons.
 
 ### Deployment
 
-With **cert-manager** deployed in place, you can deploy the AWS Private CA Issuer Add-on via [EKS Blueprints Addons](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons), reference the following parameters under the `module.eks_blueprints_addons`.
+With **cert-manager** deployed in place, you can deploy the AWS Private CA Issuer Add-on via [EKS Blueprints Addons](https://github.com/aws-blueprints/terraform-aws-eks-blueprints-addons), reference the following parameters under the `module.eks_blueprints_addons`.
 
 ```hcl
 module "eks_blueprints_addons" {

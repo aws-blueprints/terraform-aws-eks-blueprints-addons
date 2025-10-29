@@ -32,7 +32,7 @@ velero = {
 }
 ```
 
-To see a working example, see the [`stateful`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/patterns/stateful) example blueprint.
+To see a working example, see the [`stateful`](https://github.com/aws-blueprints/terraform-aws-eks-blueprints/tree/main/patterns/stateful) example blueprint.
 
 ## Validate
 

@@ -4,7 +4,7 @@ Amazon EKS on Fargate offers a built-in log router based on Fluent Bit. This mea
 
 ## Usage
 
-To configure the Fargate Fluentbit ConfigMap via the [EKS Blueprints Addons](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons), just reference the following parameters under the `module.eks_blueprints_addons`.
+To configure the Fargate Fluentbit ConfigMap via the [EKS Blueprints Addons](https://github.com/aws-blueprints/terraform-aws-eks-blueprints-addons), just reference the following parameters under the `module.eks_blueprints_addons`.
 
 ```hcl
 module "eks_blueprints_addons" {

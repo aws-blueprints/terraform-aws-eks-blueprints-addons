@@ -14,13 +14,13 @@ Use this resource, if you need to control the lifecycle add-ons down to level of
 
 ## With `helm_releases` Variable
 
-You can use the `helm_releases` variable in [EKS Blueprints Add-ons](https://registry.terraform.io/modules/aws-ia/eks-blueprints-addons/aws/latest?tab=inputs) to provide a map of add-ons and their respective Helm configuration. Under the hood, we just iterate through the provided map and pass each configuration to the Terraform [helm_release](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) resource.
+You can use the `helm_releases` variable in [EKS Blueprints Add-ons](https://registry.terraform.io/modules/aws-blueprints/eks-blueprints-addons/aws/latest?tab=inputs) to provide a map of add-ons and their respective Helm configuration. Under the hood, we just iterate through the provided map and pass each configuration to the Terraform [helm_release](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) resource.
 
 E.g.
 
 ```hcl
 module "addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
+  source  = "aws-blueprints/eks-blueprints-addons/aws"
   version = "~> 1.0"
 
   cluster_name      = "<cluster_name>"
@@ -88,8 +88,8 @@ terraform destroy -target=module.addons
 
 ## With EKS Blueprints Addon Module
 
-If you have an add-on that requires an IAM Role for Service Account (IRSA), we have created a new Terraform module [terraform-aws-eks-blueprints-addon](https://registry.terraform.io/modules/aws-ia/eks-blueprints-addon/aws/latest) that can help provision a Helm chart along with an IAM role and policies with permissions required for the add-on to function properly. We use this module for all of the add-ons that are provisioned by EKS Blueprints Add-ons today.
+If you have an add-on that requires an IAM Role for Service Account (IRSA), we have created a new Terraform module [terraform-aws-eks-blueprints-addon](https://registry.terraform.io/modules/aws-blueprints/eks-blueprints-addon/aws/latest) that can help provision a Helm chart along with an IAM role and policies with permissions required for the add-on to function properly. We use this module for all of the add-ons that are provisioned by EKS Blueprints Add-ons today.
 
-You can optionally use this module for add-ons that do not need IRSA or even just to create the IAM resources for IRSA and skip the helm release. Detailed usage of how to consume this module can be found in its [readme](https://github.com/aws-ia/terraform-aws-eks-blueprints-addon#readme).
+You can optionally use this module for add-ons that do not need IRSA or even just to create the IAM resources for IRSA and skip the helm release. Detailed usage of how to consume this module can be found in its [readme](https://github.com/aws-blueprints/terraform-aws-eks-blueprints-addon#readme).
 
 This pattern can be used to create a Terraform module with a set of add-ons that are not supported in the EKS Blueprints Add-ons today and wrap them in the same module definition. An example of this is the [ACK add-ons repository](https://github.com/aws-ia/terraform-aws-eks-ack-addons) which is a collection of ACK helm chart deployments with IRSA for each of the ACK controllers.

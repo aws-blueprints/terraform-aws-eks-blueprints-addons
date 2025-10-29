@@ -74,11 +74,11 @@ spec:
 
 ## Usage
 
-[BRUPOP](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/) can be deployed with the default configuration by enabling the add-on via the following. Notice the parameter `wait = true` set for Cert-Manager, this is needed since BRUPOP requires that Cert-Manager CRDs are already present in the cluster to be deployed.
+[BRUPOP](https://github.com/aws-blueprints/terraform-aws-eks-blueprints-addons/) can be deployed with the default configuration by enabling the add-on via the following. Notice the parameter `wait = true` set for Cert-Manager, this is needed since BRUPOP requires that Cert-Manager CRDs are already present in the cluster to be deployed.
 
 ```hcl
 module "eks_blueprints_addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
+  source  = "aws-blueprints/eks-blueprints-addons/aws"
   version = "~> 1.13"
 
   cluster_name      = module.eks.cluster_name
@@ -117,7 +117,7 @@ bottlerocket_shadow = {
 }
 ```
 
-To see a complete working example, see the [`bottlerocket`](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/patterns/bottlerocket) Blueprints Pattern.
+To see a complete working example, see the [`bottlerocket`](https://github.com/aws-blueprints/terraform-aws-eks-blueprints/tree/main/patterns/bottlerocket) Blueprints Pattern.
 
 ## Validate
 

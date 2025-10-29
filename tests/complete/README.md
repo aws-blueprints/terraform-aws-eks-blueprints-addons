@@ -33,7 +33,7 @@ terraform destroy
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3.2 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.70 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.70, < 6.0 |
 | <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.9, < 3.0 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | >= 2.20 |
 
@@ -41,8 +41,8 @@ terraform destroy
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.70 |
-| <a name="provider_aws.virginia"></a> [aws.virginia](#provider\_aws.virginia) | >= 5.70 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.70, < 6.0 |
+| <a name="provider_aws.virginia"></a> [aws.virginia](#provider\_aws.virginia) | >= 5.70, < 6.0 |
 
 ## Modules
 
@@ -72,4 +72,4 @@ No inputs.
 | <a name="output_configure_kubectl"></a> [configure\_kubectl](#output\_configure\_kubectl) | Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig |
 <!-- END_TF_DOCS -->
 
-Apache-2.0 Licensed. See [LICENSE](https://github.com/aws-ia/terraform-aws-eks-blueprints-addons/blob/main/LICENSE)
+Apache-2.0 Licensed. See [LICENSE](https://github.com/1.2.0/terraform-aws-eks-blueprints-addons/blob/main/LICENSE)
