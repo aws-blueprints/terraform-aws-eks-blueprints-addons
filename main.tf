@@ -98,7 +98,7 @@ locals {
 
 module "argo_rollouts" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_argo_rollouts
 
@@ -154,7 +154,7 @@ module "argo_rollouts" {
 
 module "argo_workflows" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_argo_workflows
 
@@ -210,7 +210,7 @@ module "argo_workflows" {
 
 module "argocd" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_argocd
 
@@ -266,7 +266,7 @@ module "argocd" {
 
 module "argo_events" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_argo_events
 
@@ -327,7 +327,7 @@ locals {
 
 module "aws_cloudwatch_metrics" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_aws_cloudwatch_metrics
 
@@ -380,6 +380,10 @@ module "aws_cloudwatch_metrics" {
       {
         name  = "serviceAccount.name"
         value = local.aws_cloudwatch_metrics_service_account
+      },
+      {
+        name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+        value_is_iam_role_arn = true
       }
     ],
     try(var.aws_cloudwatch_metrics.set, [])
@@ -387,8 +391,6 @@ module "aws_cloudwatch_metrics" {
   set_sensitive = try(var.aws_cloudwatch_metrics.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names                = ["serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
-  create_role                   = try(var.aws_cloudwatch_metrics.create_role, true)
   role_name                     = try(var.aws_cloudwatch_metrics.role_name, "aws-cloudwatch-metrics")
   role_name_use_prefix          = try(var.aws_cloudwatch_metrics.role_name_use_prefix, true)
   role_path                     = try(var.aws_cloudwatch_metrics.role_path, "/")
@@ -399,7 +401,7 @@ module "aws_cloudwatch_metrics" {
   )
   create_policy = try(var.aws_cloudwatch_metrics.create_policy, false)
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     this = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -496,7 +498,7 @@ data "aws_iam_policy_document" "aws_efs_csi_driver" {
 
 module "aws_efs_csi_driver" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_aws_efs_csi_driver
 
@@ -548,17 +550,20 @@ module "aws_efs_csi_driver" {
     {
       name  = "node.serviceAccount.name"
       value = local.aws_efs_csi_driver_node_service_account
+    },
+    {
+      name                  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
+    },
+    {
+      name                  = "node.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
     }],
     try(var.aws_efs_csi_driver.set, [])
   )
   set_sensitive = try(var.aws_efs_csi_driver.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names = [
-    "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn",
-    "node.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-  ]
-  create_role                   = try(var.aws_efs_csi_driver.create_role, true)
   role_name                     = try(var.aws_efs_csi_driver.role_name, "aws-efs-csi-driver")
   role_name_use_prefix          = try(var.aws_efs_csi_driver.role_name_use_prefix, true)
   role_path                     = try(var.aws_efs_csi_driver.role_path, "/")
@@ -573,7 +578,7 @@ module "aws_efs_csi_driver" {
   policy_path             = try(var.aws_efs_csi_driver.policy_path, null)
   policy_description      = try(var.aws_efs_csi_driver.policy_description, "IAM Policy for AWS EFS CSI Driver")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     controller = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -673,7 +678,7 @@ data "aws_iam_policy_document" "aws_for_fluentbit" {
 
 module "aws_for_fluentbit" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_aws_for_fluentbit
 
@@ -741,16 +746,16 @@ module "aws_for_fluentbit" {
     {
       name  = "cloudWatchLogs.region"
       value = local.region
+    },
+    {
+      name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
     }],
     try(var.aws_for_fluentbit.set, [])
   )
   set_sensitive = try(var.aws_for_fluentbit.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names = [
-    "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn",
-  ]
-  create_role                   = try(var.aws_for_fluentbit.create_role, true)
   role_name                     = try(var.aws_for_fluentbit.role_name, "aws-for-fluent-bit")
   role_name_use_prefix          = try(var.aws_for_fluentbit.role_name_use_prefix, true)
   role_path                     = try(var.aws_for_fluentbit.role_path, "/")
@@ -765,7 +770,7 @@ module "aws_for_fluentbit" {
   policy_path             = try(var.aws_for_fluentbit.policy_path, null)
   policy_description      = try(var.aws_for_fluentbit.policy_description, "IAM Policy for AWS Fluentbit")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     this = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -1069,7 +1074,7 @@ data "aws_iam_policy_document" "aws_fsx_csi_driver" {
 
 module "aws_fsx_csi_driver" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_aws_fsx_csi_driver
 
@@ -1121,17 +1126,20 @@ module "aws_fsx_csi_driver" {
     {
       name  = "node.serviceAccount.name"
       value = local.aws_fsx_csi_driver_node_service_account
+    },
+    {
+      name                  = "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
+    },
+    {
+      name                  = "node.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
     }],
     try(var.aws_fsx_csi_driver.set, [])
   )
   set_sensitive = try(var.aws_fsx_csi_driver.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names = [
-    "controller.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn",
-    "node.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-  ]
-  create_role                   = try(var.aws_fsx_csi_driver.create_role, true)
   role_name                     = try(var.aws_fsx_csi_driver.role_name, "aws-fsx-csi-driver")
   role_name_use_prefix          = try(var.aws_fsx_csi_driver.role_name_use_prefix, true)
   role_path                     = try(var.aws_fsx_csi_driver.role_path, "/")
@@ -1146,7 +1154,7 @@ module "aws_fsx_csi_driver" {
   policy_path             = try(var.aws_fsx_csi_driver.policy_path, null)
   policy_description      = try(var.aws_fsx_csi_driver.policy_description, "IAM Policy for AWS FSX CSI Driver")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     controller = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -1440,7 +1448,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
 module "aws_load_balancer_controller" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_aws_load_balancer_controller
 
@@ -1489,17 +1497,20 @@ module "aws_load_balancer_controller" {
     {
       name  = "serviceAccount.name"
       value = local.aws_load_balancer_controller_service_account
-      }, {
+    },
+    {
       name  = "clusterName"
       value = local.cluster_name
+    },
+    {
+      name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
     }],
     try(var.aws_load_balancer_controller.set, [])
   )
   set_sensitive = try(var.aws_load_balancer_controller.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  create_role                   = try(var.aws_load_balancer_controller.create_role, true)
-  set_irsa_names                = ["serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
   role_name                     = try(var.aws_load_balancer_controller.role_name, "alb-controller")
   role_name_use_prefix          = try(var.aws_load_balancer_controller.role_name_use_prefix, true)
   role_path                     = try(var.aws_load_balancer_controller.role_path, "/")
@@ -1514,7 +1525,7 @@ module "aws_load_balancer_controller" {
   policy_path             = try(var.aws_load_balancer_controller.policy_path, null)
   policy_description      = try(var.aws_load_balancer_controller.policy_description, "IAM Policy for AWS Load Balancer Controller")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     this = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -1661,7 +1672,7 @@ data "aws_iam_policy_document" "aws_node_termination_handler" {
 
 module "aws_node_termination_handler" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_aws_node_termination_handler
 
@@ -1721,6 +1732,10 @@ module "aws_node_termination_handler" {
       {
         name  = "enableSqsTerminationDraining"
         value = true
+      },
+      {
+        name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+        value_is_iam_role_arn = true
       }
     ],
     try(var.aws_node_termination_handler.set, [])
@@ -1728,8 +1743,6 @@ module "aws_node_termination_handler" {
   set_sensitive = try(var.aws_node_termination_handler.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names                = ["serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
-  create_role                   = try(var.aws_node_termination_handler.create_role, true)
   role_name                     = try(var.aws_node_termination_handler.role_name, "aws-node-termination-handler")
   role_name_use_prefix          = try(var.aws_node_termination_handler.role_name_use_prefix, true)
   role_path                     = try(var.aws_node_termination_handler.role_path, "/")
@@ -1744,7 +1757,7 @@ module "aws_node_termination_handler" {
   policy_path             = try(var.aws_node_termination_handler.policy_path, null)
   policy_description      = try(var.aws_node_termination_handler.policy_description, "IAM Policy for AWS Node Termination Handler")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     this = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -1785,7 +1798,7 @@ data "aws_iam_policy_document" "aws_privateca_issuer" {
 
 module "aws_privateca_issuer" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_aws_privateca_issuer
 
@@ -1833,14 +1846,16 @@ module "aws_privateca_issuer" {
     {
       name  = "serviceAccount.name"
       value = local.aws_privateca_issuer_service_account
+    },
+    {
+      name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
     }],
     try(var.aws_privateca_issuer.set, [])
   )
   set_sensitive = try(var.aws_privateca_issuer.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names                = ["serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
-  create_role                   = try(var.aws_privateca_issuer.create_role, true)
   role_name                     = try(var.aws_privateca_issuer.role_name, "aws-privateca-issuer")
   role_name_use_prefix          = try(var.aws_privateca_issuer.role_name_use_prefix, true)
   role_path                     = try(var.aws_privateca_issuer.role_path, "/")
@@ -1855,7 +1870,7 @@ module "aws_privateca_issuer" {
   policy_path             = try(var.aws_privateca_issuer.policy_path, null)
   policy_description      = try(var.aws_privateca_issuer.policy_description, "IAM Policy for AWS Private CA Issuer")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     controller = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -1903,7 +1918,7 @@ data "aws_iam_policy_document" "cert_manager" {
 
 module "cert_manager" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_cert_manager
 
@@ -1955,6 +1970,10 @@ module "cert_manager" {
     {
       name  = "serviceAccount.name"
       value = local.cert_manager_service_account
+    },
+    {
+      name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
     }
     ],
     try(var.cert_manager.set, [])
@@ -1962,8 +1981,6 @@ module "cert_manager" {
   set_sensitive = try(var.cert_manager.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names                = ["serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
-  create_role                   = local.create_cert_manager_irsa && try(var.cert_manager.create_role, true)
   role_name                     = try(var.cert_manager.role_name, "cert-manager")
   role_name_use_prefix          = try(var.cert_manager.role_name_use_prefix, true)
   role_path                     = try(var.cert_manager.role_path, "/")
@@ -1971,7 +1988,6 @@ module "cert_manager" {
   role_description              = try(var.cert_manager.role_description, "IRSA for cert-manger project")
   role_policies                 = lookup(var.cert_manager, "role_policies", {})
 
-  allow_self_assume_role  = try(var.cert_manager.allow_self_assume_role, true)
   source_policy_documents = data.aws_iam_policy_document.cert_manager[*].json
   policy_statements       = lookup(var.cert_manager, "policy_statements", [])
   policy_name             = try(var.cert_manager.policy_name, null)
@@ -1979,7 +1995,7 @@ module "cert_manager" {
   policy_path             = try(var.cert_manager.policy_path, null)
   policy_description      = try(var.cert_manager.policy_description, "IAM Policy for cert-manager")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     this = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -2060,7 +2076,7 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
 
 module "cluster_autoscaler" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_cluster_autoscaler
 
@@ -2121,6 +2137,10 @@ module "cluster_autoscaler" {
       {
         name  = "rbac.serviceAccount.name"
         value = local.cluster_autoscaler_service_account
+      },
+      {
+        name                  = "rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+        value_is_iam_role_arn = true
       }
     ],
     try(var.cluster_autoscaler.set, [])
@@ -2128,8 +2148,6 @@ module "cluster_autoscaler" {
   set_sensitive = try(var.cluster_autoscaler.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names                = ["rbac.serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
-  create_role                   = try(var.cluster_autoscaler.create_role, true)
   role_name                     = try(var.cluster_autoscaler.role_name, "cluster-autoscaler")
   role_name_use_prefix          = try(var.cluster_autoscaler.role_name_use_prefix, true)
   role_path                     = try(var.cluster_autoscaler.role_path, "/")
@@ -2144,7 +2162,7 @@ module "cluster_autoscaler" {
   policy_path             = try(var.cluster_autoscaler.policy_path, null)
   policy_description      = try(var.cluster_autoscaler.policy_description, "IAM Policy for cluster-autoscaler operator")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     this = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -2161,7 +2179,7 @@ module "cluster_autoscaler" {
 
 module "cluster_proportional_autoscaler" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_cluster_proportional_autoscaler
 
@@ -2286,7 +2304,7 @@ data "aws_iam_policy_document" "external_dns" {
 
 module "external_dns" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_external_dns
 
@@ -2334,14 +2352,16 @@ module "external_dns" {
     {
       name  = "serviceAccount.name"
       value = local.external_dns_service_account
+    },
+    {
+      name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
     }],
     try(var.external_dns.set, [])
   )
   set_sensitive = try(var.external_dns.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names                = ["serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
-  create_role                   = try(var.external_dns.create_role, true) && length(var.external_dns_route53_zone_arns) > 0
   role_name                     = try(var.external_dns.role_name, "external-dns")
   role_name_use_prefix          = try(var.external_dns.role_name_use_prefix, true)
   role_path                     = try(var.external_dns.role_path, "/")
@@ -2356,7 +2376,7 @@ module "external_dns" {
   policy_path             = try(var.external_dns.policy_path, null)
   policy_description      = try(var.external_dns.policy_description, "IAM Policy for external-dns operator")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     this = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -2439,7 +2459,7 @@ data "aws_iam_policy_document" "external_secrets" {
 
 module "external_secrets" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_external_secrets
 
@@ -2491,14 +2511,16 @@ module "external_secrets" {
     {
       name  = "webhook.port"
       value = var.enable_eks_fargate ? "9443" : "10250"
+    },
+    {
+      name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
     }],
     try(var.external_secrets.set, [])
   )
   set_sensitive = try(var.external_secrets.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names                = ["serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
-  create_role                   = try(var.external_secrets.create_role, true)
   role_name                     = try(var.external_secrets.role_name, "external-secrets")
   role_name_use_prefix          = try(var.external_secrets.role_name_use_prefix, true)
   role_path                     = try(var.external_secrets.role_path, "/")
@@ -2513,7 +2535,7 @@ module "external_secrets" {
   policy_path             = try(var.external_secrets.policy_path, null)
   policy_description      = try(var.external_secrets.policy_description, "IAM Policy for external-secrets operator")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     this = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -2689,7 +2711,7 @@ resource "kubernetes_config_map_v1" "aws_logging" {
 
 module "gatekeeper" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_gatekeeper
 
@@ -2745,7 +2767,7 @@ module "gatekeeper" {
 
 module "ingress_nginx" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_ingress_nginx
 
@@ -3069,7 +3091,7 @@ resource "aws_iam_instance_profile" "karpenter" {
 
 module "karpenter" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_karpenter
 
@@ -3115,13 +3137,15 @@ module "karpenter" {
   postrender = try(var.karpenter.postrender, [])
   set = concat(
     [for s in local.karpenter_set : s if s.value != null],
+    {
+      name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
+    },
     try(var.karpenter.set, [])
   )
   set_sensitive = try(var.karpenter.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names                = ["serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
-  create_role                   = try(var.karpenter.create_role, true)
   role_name                     = try(var.karpenter.role_name, "karpenter")
   role_name_use_prefix          = try(var.karpenter.role_name_use_prefix, true)
   role_path                     = try(var.karpenter.role_path, "/")
@@ -3136,7 +3160,7 @@ module "karpenter" {
   policy_path             = try(var.karpenter.policy_path, null)
   policy_description      = try(var.karpenter.policy_description, "IAM Policy for karpenter")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     this = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -3164,7 +3188,7 @@ module "karpenter" {
 
 module "kube_prometheus_stack" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_kube_prometheus_stack
 
@@ -3220,7 +3244,7 @@ module "kube_prometheus_stack" {
 
 module "metrics_server" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_metrics_server
 
@@ -3276,7 +3300,7 @@ module "metrics_server" {
 
 module "secrets_store_csi_driver" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_secrets_store_csi_driver
 
@@ -3332,7 +3356,7 @@ module "secrets_store_csi_driver" {
 
 module "secrets_store_csi_driver_provider_aws" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_secrets_store_csi_driver_provider_aws
 
@@ -3445,7 +3469,7 @@ data "aws_iam_policy_document" "velero" {
 
 module "velero" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_velero
 
@@ -3528,14 +3552,16 @@ module "velero" {
     {
       name  = "credentials.useSecret"
       value = false
+    },
+    {
+      name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
     }],
     try(var.velero.set, [])
   )
   set_sensitive = try(var.velero.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names                = ["serviceAccount.server.annotations.eks\\.amazonaws\\.com/role-arn"]
-  create_role                   = try(var.velero.create_role, true)
   role_name                     = try(var.velero.role_name, "velero")
   role_name_use_prefix          = try(var.velero.role_name_use_prefix, true)
   role_path                     = try(var.velero.role_path, "/")
@@ -3550,7 +3576,7 @@ module "velero" {
   policy_path             = try(var.velero.policy_path, null)
   policy_description      = try(var.velero.policy_description, "IAM Policy for Velero")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     controller = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -3567,7 +3593,7 @@ module "velero" {
 
 module "vpa" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_vpa
 
@@ -3660,7 +3686,7 @@ data "aws_iam_policy_document" "aws_gateway_api_controller" {
 
 module "aws_gateway_api_controller" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_aws_gateway_api_controller
 
@@ -3708,20 +3734,24 @@ module "aws_gateway_api_controller" {
     {
       name  = "serviceAccount.name"
       value = local.aws_gateway_api_controller_service_account
-      }, {
+    },
+    {
       name  = "awsRegion"
       value = local.region
-      }, {
+    },
+    {
       name  = "awsAccountId"
       value = local.account_id
+    },
+    {
+      name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
+      value_is_iam_role_arn = true
     }],
     try(var.aws_gateway_api_controller.set, [])
   )
   set_sensitive = try(var.aws_gateway_api_controller.set_sensitive, [])
 
   # IAM role for service account (IRSA)
-  set_irsa_names                = ["serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"]
-  create_role                   = try(var.aws_gateway_api_controller.create_role, true)
   role_name                     = try(var.aws_gateway_api_controller.role_name, "aws-gateway-api-controller")
   role_name_use_prefix          = try(var.aws_gateway_api_controller.role_name_use_prefix, true)
   role_path                     = try(var.aws_gateway_api_controller.role_path, "/")
@@ -3736,7 +3766,7 @@ module "aws_gateway_api_controller" {
   policy_path             = try(var.aws_gateway_api_controller.policy_path, null)
   policy_description      = try(var.aws_gateway_api_controller.policy_description, "IAM Policy for aws-gateway-api-controller")
 
-  oidc_providers = {
+  irsa_oidc_providers = {
     this = {
       provider_arn = local.oidc_provider_arn
       # namespace is inherited from chart
@@ -3757,7 +3787,7 @@ locals {
 
 module "bottlerocket_shadow" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_bottlerocket_update_operator
 
@@ -3809,7 +3839,7 @@ module "bottlerocket_shadow" {
 
 module "bottlerocket_update_operator" {
   source  = "aws-blueprints/eks-blueprints-addon/aws"
-  version = "1.2.0"
+  version = "2.0.0"
 
   create = var.enable_bottlerocket_update_operator
 

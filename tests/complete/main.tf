@@ -2,12 +2,6 @@ provider "aws" {
   region = local.region
 }
 
-# Required for public ECR where Karpenter artifacts are hosted
-provider "aws" {
-  region = "us-east-1"
-  alias  = "virginia"
-}
-
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
@@ -21,11 +15,11 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
 
-    exec {
+    exec = {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
@@ -43,7 +37,7 @@ data "aws_availability_zones" "available" {
 }
 
 data "aws_ecrpublic_authorization_token" "token" {
-  provider = aws.virginia
+  region = "us-east-1"
 }
 
 locals {
@@ -70,25 +64,6 @@ module "eks_blueprints_addons" {
   cluster_endpoint  = module.eks.cluster_endpoint
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
-
-  eks_addons = {
-    aws-ebs-csi-driver = {
-      most_recent              = true
-      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-    }
-    coredns = {
-      most_recent = true
-
-      timeouts = {
-        create = "25m"
-        delete = "10m"
-      }
-    }
-    vpc-cni = {
-      most_recent = true
-    }
-    kube-proxy = {}
-  }
 
   enable_aws_efs_csi_driver                    = true
   enable_aws_fsx_csi_driver                    = true
@@ -214,20 +189,6 @@ module "eks_blueprints_addons" {
         EOT
       ]
     }
-    gpu-operator = {
-      description      = "A Helm chart for NVIDIA GPU operator"
-      namespace        = "gpu-operator"
-      create_namespace = true
-      chart            = "gpu-operator"
-      chart_version    = "v23.9.1"
-      repository       = "https://nvidia.github.io/gpu-operator"
-      values = [
-        <<-EOT
-          operator:
-            defaultRuntime: containerd
-        EOT
-      ]
-    }
   }
 
   tags = local.tags
@@ -239,18 +200,29 @@ module "eks_blueprints_addons" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.26"
+  version = "~> 21.0"
 
-  cluster_name                   = local.name
-  cluster_version                = "1.31"
-  cluster_endpoint_public_access = true
+  name               = local.name
+  kubernetes_version = "1.34"
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  # Give the Terraform identity admin access to the cluster
-  # which will allow resources to be deployed into the cluster
+  # Access for Helm to deploy via Terraform
+  endpoint_public_access                   = true
   enable_cluster_creator_admin_permissions = true
+
+  # EKS Addons
+  addons = {
+    coredns = {}
+    eks-pod-identity-agent = {
+      before_compute = true
+    }
+    kube-proxy = {}
+    vpc-cni = {
+      before_compute = true
+    }
+  }
 
   eks_managed_node_groups = {
     initial = {
@@ -282,7 +254,7 @@ module "eks" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  version = "~> 6.0"
 
   name = local.name
   cidr = local.vpc_cidr
@@ -307,7 +279,7 @@ module "vpc" {
 
 module "velero_backup_s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "~> 3.0"
+  version = "~> 5.0"
 
   bucket_prefix = "${local.name}-"
 
@@ -317,13 +289,6 @@ module "velero_backup_s3_bucket" {
 
   attach_deny_insecure_transport_policy = true
   attach_require_latest_tls_policy      = true
-
-  acl = "private"
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
 
   control_object_ownership = true
   object_ownership         = "BucketOwnerPreferred"
@@ -338,24 +303,6 @@ module "velero_backup_s3_bucket" {
       apply_server_side_encryption_by_default = {
         sse_algorithm = "AES256"
       }
-    }
-  }
-
-  tags = local.tags
-}
-
-module "ebs_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.20"
-
-  role_name_prefix = "${local.name}-ebs-csi-driver-"
-
-  attach_ebs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
     }
   }
 
