@@ -607,16 +607,6 @@ variable "bottlerocket_shadow" {
 }
 
 ################################################################################
-# GitOps Bridge
-################################################################################
-
-variable "create_kubernetes_resources" {
-  description = "Create Kubernetes resource with Helm or Kubernetes provider"
-  type        = bool
-  default     = true
-}
-
-################################################################################
 # Usage Telemetry
 ################################################################################
 
