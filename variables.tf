@@ -605,13 +605,3 @@ variable "bottlerocket_shadow" {
   type        = any
   default     = {}
 }
-
-################################################################################
-# Usage Telemetry
-################################################################################
-
-variable "observability_tag" {
-  description = "Tag to identify EKS Blueprints usage within observability tools"
-  type        = string
-  default     = "qs-1ubotj5kl"
-}
