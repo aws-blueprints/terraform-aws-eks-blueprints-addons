@@ -18,7 +18,7 @@ resource "time_sleep" "this" {
 locals {
   account_id = data.aws_caller_identity.current.account_id
   partition  = data.aws_partition.current.partition
-  region     = data.aws_region.current.name
+  region     = data.aws_region.current.region
 
   # Threads the sleep resource into the module to make the dependency
   cluster_endpoint  = time_sleep.this.triggers["cluster_endpoint"]
@@ -102,9 +102,6 @@ module "argo_rollouts" {
 
   create = var.enable_argo_rollouts
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/argoproj/argo-helm/tree/main/charts/argo-rollouts
   name             = try(var.argo_rollouts.name, "argo-rollouts")
   description      = try(var.argo_rollouts.description, "A Helm chart for Argo Rollouts")
@@ -157,9 +154,6 @@ module "argo_workflows" {
   version = "2.0.0"
 
   create = var.enable_argo_workflows
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/argoproj/argo-helm/tree/main/charts/argo-workflows
   name             = try(var.argo_workflows.name, "argo-workflows")
@@ -214,9 +208,6 @@ module "argocd" {
 
   create = var.enable_argocd
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/Chart.yaml
   name             = try(var.argocd.name, "argo-cd")
   description      = try(var.argocd.description, "A Helm chart to install the ArgoCD")
@@ -269,9 +260,6 @@ module "argo_events" {
   version = "2.0.0"
 
   create = var.enable_argo_events
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/argoproj/argo-helm/tree/main/charts/argo-events
   name             = try(var.argo_events.name, "argo-events")
@@ -330,9 +318,6 @@ module "aws_cloudwatch_metrics" {
   version = "2.0.0"
 
   create = var.enable_aws_cloudwatch_metrics
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/aws/eks-charts/tree/master/stable/aws-cloudwatch-metrics
   name             = try(var.aws_cloudwatch_metrics.name, "aws-cloudwatch-metrics")
@@ -501,9 +486,6 @@ module "aws_efs_csi_driver" {
   version = "2.0.0"
 
   create = var.enable_aws_efs_csi_driver
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/kubernetes-sigs/aws-efs-csi-driver/tree/master/charts/aws-efs-csi-driver
   name             = try(var.aws_efs_csi_driver.name, "aws-efs-csi-driver")
@@ -681,9 +663,6 @@ module "aws_for_fluentbit" {
   version = "2.0.0"
 
   create = var.enable_aws_for_fluentbit
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/aws/eks-charts/blob/master/stable/aws-for-fluent-bit/Chart.yaml
   name             = try(var.aws_for_fluentbit.name, "aws-for-fluent-bit")
@@ -1078,9 +1057,6 @@ module "aws_fsx_csi_driver" {
 
   create = var.enable_aws_fsx_csi_driver
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/kubernetes-sigs/aws-fsx-csi-driver/tree/master/charts/aws-fsx-csi-driver
   name             = try(var.aws_fsx_csi_driver.name, "aws-fsx-csi-driver")
   description      = try(var.aws_fsx_csi_driver.description, "A Helm chart for AWS FSx for Lustre CSI Driver")
@@ -1452,9 +1428,6 @@ module "aws_load_balancer_controller" {
 
   create = var.enable_aws_load_balancer_controller
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/aws/eks-charts/blob/master/stable/aws-load-balancer-controller/Chart.yaml
   name        = try(var.aws_load_balancer_controller.name, "aws-load-balancer-controller")
   description = try(var.aws_load_balancer_controller.description, "A Helm chart to deploy aws-load-balancer-controller for ingress resources")
@@ -1676,9 +1649,6 @@ module "aws_node_termination_handler" {
 
   create = var.enable_aws_node_termination_handler
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/aws/eks-charts/blob/master/stable/aws-node-termination-handler/Chart.yaml
   name             = try(var.aws_node_termination_handler.name, "aws-node-termination-handler")
   description      = try(var.aws_node_termination_handler.description, "A Helm chart to deploy AWS Node Termination Handler")
@@ -1802,9 +1772,6 @@ module "aws_privateca_issuer" {
 
   create = var.enable_aws_privateca_issuer
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/cert-manager/aws-privateca-issuer/blob/main/charts/aws-pca-issuer/Chart.yaml
   name             = try(var.aws_privateca_issuer.name, "aws-privateca-issuer")
   description      = try(var.aws_privateca_issuer.description, "A Helm chart to install the AWS Private CA Issuer")
@@ -1921,9 +1888,6 @@ module "cert_manager" {
   version = "2.0.0"
 
   create = var.enable_cert_manager
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/Chart.template.yaml
   name             = try(var.cert_manager.name, "cert-manager")
@@ -2080,9 +2044,6 @@ module "cluster_autoscaler" {
 
   create = var.enable_cluster_autoscaler
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/kubernetes/autoscaler/blob/master/charts/cluster-autoscaler/Chart.yaml
   name             = try(var.cluster_autoscaler.name, "cluster-autoscaler")
   description      = try(var.cluster_autoscaler.description, "A Helm chart to deploy cluster-autoscaler")
@@ -2182,9 +2143,6 @@ module "cluster_proportional_autoscaler" {
   version = "2.0.0"
 
   create = var.enable_cluster_proportional_autoscaler
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/kubernetes-sigs/cluster-proportional-autoscaler/blob/master/charts/cluster-proportional-autoscaler/Chart.yaml
   name             = try(var.cluster_proportional_autoscaler.name, "cluster-proportional-autoscaler")
@@ -2307,9 +2265,6 @@ module "external_dns" {
   version = "2.0.0"
 
   create = var.enable_external_dns
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/kubernetes-sigs/external-dns/tree/master/charts/external-dns/Chart.yaml
   name             = try(var.external_dns.name, "external-dns")
@@ -2462,9 +2417,6 @@ module "external_secrets" {
   version = "2.0.0"
 
   create = var.enable_external_secrets
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/external-secrets/external-secrets/blob/main/deploy/charts/external-secrets/Chart.yaml
   name             = try(var.external_secrets.name, "external-secrets")
@@ -2631,7 +2583,7 @@ data "aws_iam_policy_document" "fargate_fluentbit" {
 # Help on Fargate Logging with Fluentbit and CloudWatch
 # https://docs.aws.amazon.com/eks/latest/userguide/fargate-logging.html
 resource "kubernetes_namespace_v1" "aws_observability" {
-  count = var.enable_fargate_fluentbit && var.create_kubernetes_resources ? 1 : 0
+  count = var.enable_fargate_fluentbit ? 1 : 0
 
   metadata {
     name = "aws-observability"
@@ -2644,7 +2596,7 @@ resource "kubernetes_namespace_v1" "aws_observability" {
 
 # fluent-bit-cloudwatch value as the name of the CloudWatch log group that is automatically created as soon as your apps start logging
 resource "kubernetes_config_map_v1" "aws_logging" {
-  count = var.enable_fargate_fluentbit && var.create_kubernetes_resources ? 1 : 0
+  count = var.enable_fargate_fluentbit ? 1 : 0
 
   metadata {
     name      = "aws-logging"
@@ -2715,9 +2667,6 @@ module "gatekeeper" {
 
   create = var.enable_gatekeeper
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/open-policy-agent/gatekeeper/blob/master/charts/gatekeeper/Chart.yaml
   name             = try(var.gatekeeper.name, "gatekeeper")
   description      = try(var.gatekeeper.description, "A Helm chart to install Gatekeeper")
@@ -2770,9 +2719,6 @@ module "ingress_nginx" {
   version = "2.0.0"
 
   create = var.enable_ingress_nginx
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/Chart.yaml
   name             = try(var.ingress_nginx.name, "ingress-nginx")
@@ -3095,9 +3041,6 @@ module "karpenter" {
 
   create = var.enable_karpenter
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/aws/karpenter/blob/main/charts/karpenter/Chart.yaml
   name             = try(var.karpenter.name, "karpenter")
   description      = try(var.karpenter.description, "A Helm chart to deploy Karpenter")
@@ -3192,9 +3135,6 @@ module "kube_prometheus_stack" {
 
   create = var.enable_kube_prometheus_stack
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/Chart.yaml
   name             = try(var.kube_prometheus_stack.name, "kube-prometheus-stack")
   description      = try(var.kube_prometheus_stack.description, "A Helm chart to install the Kube Prometheus Stack")
@@ -3247,9 +3187,6 @@ module "metrics_server" {
   version = "2.0.0"
 
   create = var.enable_metrics_server
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/kubernetes-sigs/metrics-server/blob/master/charts/metrics-server/Chart.yaml
   name             = try(var.metrics_server.name, "metrics-server")
@@ -3304,9 +3241,6 @@ module "secrets_store_csi_driver" {
 
   create = var.enable_secrets_store_csi_driver
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/kubernetes-sigs/secrets-store-csi-driver/blob/main/charts/secrets-store-csi-driver/Chart.yaml
   name             = try(var.secrets_store_csi_driver.name, "secrets-store-csi-driver")
   description      = try(var.secrets_store_csi_driver.description, "A Helm chart to install the Secrets Store CSI Driver")
@@ -3359,9 +3293,6 @@ module "secrets_store_csi_driver_provider_aws" {
   version = "2.0.0"
 
   create = var.enable_secrets_store_csi_driver_provider_aws
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/aws/secrets-store-csi-driver-provider-aws/blob/main/charts/secrets-store-csi-driver-provider-aws/Chart.yaml
   name             = try(var.secrets_store_csi_driver_provider_aws.name, "secrets-store-csi-driver-provider-aws")
@@ -3472,9 +3403,6 @@ module "velero" {
   version = "2.0.0"
 
   create = var.enable_velero
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/vmware-tanzu/helm-charts/blob/main/charts/velero/Chart.yaml
   name             = try(var.velero.name, "velero")
@@ -3597,9 +3525,6 @@ module "vpa" {
 
   create = var.enable_vpa
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/FairwindsOps/charts/blob/master/stable/vpa/Chart.yaml
   # (there is no official helm chart for VPA)
   name             = try(var.vpa.name, "vpa")
@@ -3689,9 +3614,6 @@ module "aws_gateway_api_controller" {
   version = "2.0.0"
 
   create = var.enable_aws_gateway_api_controller
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/aws/aws-application-networking-k8s/blob/main/helm/Chart.yaml
   name             = try(var.aws_gateway_api_controller.name, "aws-gateway-api-controller")
@@ -3791,9 +3713,6 @@ module "bottlerocket_shadow" {
 
   create = var.enable_bottlerocket_update_operator
 
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
-
   # https://github.com/bottlerocket-os/bottlerocket-update-operator/blob/develop/deploy/charts/bottlerocket-shadow/Chart.yaml
   name          = try(var.bottlerocket_shadow.name, "brupop-crds")
   description   = try(var.bottlerocket_shadow.description, "CRDs for Bottlerocket Update Operator")
@@ -3842,9 +3761,6 @@ module "bottlerocket_update_operator" {
   version = "2.0.0"
 
   create = var.enable_bottlerocket_update_operator
-
-  # Disable helm release
-  create_release = var.create_kubernetes_resources
 
   # https://github.com/bottlerocket-os/bottlerocket-update-operator/blob/develop/deploy/charts/bottlerocket-update-operator/Chart.yaml
   name             = try(var.bottlerocket_update_operator.name, "brupop-operator")
