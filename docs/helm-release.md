@@ -1,6 +1,6 @@
 # Helm Release Add-ons
 
-Starting with [EKS Blueprints v5](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/v4-to-v5/motivation.md) we have made a decision to only support the provisioning of a certain core set of [add-ons](./addons/). On an going basis, we will evaluate the current list to see if more add-ons need to be supported via this repo. Typically you can expect that any AWS created add-on that is not yet available via the [Amazon EKS add-ons](./amazon-eks-addons.md) will be prioritized to be provisioned through this repository.
+Starting with [EKS Blueprints v5](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/v4-to-v5/motivation.md) we have made a decision to only support the provisioning of a certain core set of add-ons. On an going basis, we will evaluate the current list to see if more add-ons need to be supported via this repo. Typically you can expect that any AWS created add-on that is not yet available via the [Amazon EKS add-ons](./amazon-eks-addons.md) will be prioritized to be provisioned through this repository.
 
 In addition to these AWS add-ons, we will also support the provisioning of certain OSS add-ons that we think customers will benefit from. These are selected based on customer demand (e.g. [metrics-server](./addons/metrics-server.md)) and certain patterns ([gitops](./addons/argocd.md)) that are foundational elements for a complete blueprint of an EKS cluster.
 
@@ -21,7 +21,6 @@ E.g.
 ```hcl
 module "addons" {
   source  = "aws-blueprints/eks-blueprints-addons/aws"
-  version = "~> 1.0"
 
   cluster_name      = "<cluster_name>"
   cluster_endpoint  = "<cluster_endpoint>"
