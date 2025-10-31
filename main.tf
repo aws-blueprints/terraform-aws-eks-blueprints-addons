@@ -245,7 +245,7 @@ module "aws_cloudwatch_metrics" {
   namespace        = try(var.aws_cloudwatch_metrics.namespace, "amazon-cloudwatch")
   create_namespace = try(var.aws_cloudwatch_metrics.create_namespace, true)
   chart            = "aws-cloudwatch-metrics"
-  chart_version    = try(var.aws_cloudwatch_metrics.chart_version, "0.0.9")
+  chart_version    = try(var.aws_cloudwatch_metrics.chart_version, "0.0.11")
   repository       = try(var.aws_cloudwatch_metrics.repository, "https://aws.github.io/eks-charts")
   values           = try(var.aws_cloudwatch_metrics.values, [])
 
@@ -2947,7 +2947,7 @@ module "velero" {
   namespace        = try(var.velero.namespace, "velero")
   create_namespace = try(var.velero.create_namespace, true)
   chart            = "velero"
-  chart_version    = try(var.velero.chart_version, "3.1.6")
+  chart_version    = try(var.velero.chart_version, "11.1.1")
   repository       = try(var.velero.repository, "https://vmware-tanzu.github.io/helm-charts/")
   values           = try(var.velero.values, [])
 
@@ -2983,7 +2983,7 @@ module "velero" {
       name  = "initContainers"
       value = <<-EOT
    - name: velero-plugin-for-aws
-     image: velero/velero-plugin-for-aws:v1.7.0
+     image: velero/velero-plugin-for-aws:v1.13.0
      imagePullPolicy: IfNotPresent
      volumeMounts:
        - mountPath: /target
@@ -2995,23 +2995,27 @@ module "velero" {
       value = local.velero_service_account
     },
     {
-      name  = "configuration.provider"
+      name  = "configuration.backupStorageLocation[0].provider"
       value = "aws"
     },
     {
-      name  = "configuration.backupStorageLocation.prefix"
+      name  = "configuration.backupStorageLocation[0].prefix"
       value = local.velero_backup_s3_bucket_prefix
     },
     {
-      name  = "configuration.backupStorageLocation.bucket"
+      name  = "configuration.backupStorageLocation[0].bucket"
       value = local.velero_backup_s3_bucket_name
     },
     {
-      name  = "configuration.backupStorageLocation.config.region"
+      name  = "configuration.backupStorageLocation[0].config.region"
       value = local.region
     },
     {
-      name  = "configuration.volumeSnapshotLocation.config.region"
+      name  = "configuration.volumeSnapshotLocation[0].provider"
+      value = "aws"
+    },
+    {
+      name  = "configuration.volumeSnapshotLocation[0].config.region"
       value = local.region
     },
     {

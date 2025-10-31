@@ -49,7 +49,7 @@ locals {
 
   tags = {
     Blueprint  = local.name
-    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints-addons"
+    GithubRepo = "github.com/aws-blueprints/terraform-aws-eks-blueprints-addons"
   }
 }
 
@@ -57,19 +57,18 @@ locals {
 # Cluster
 ################################################################################
 
-#tfsec:ignore:aws-eks-enable-control-plane-logging
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.13"
+  version = "~> 20.37"
 
   cluster_name                   = local.name
-  cluster_version                = "1.26"
+  cluster_version                = "1.32"
   cluster_endpoint_public_access = true
+
+  enable_cluster_creator_admin_permissions = true
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
-
-  manage_aws_auth_configmap = true
 
   eks_managed_node_groups = {
     initial = {
@@ -106,28 +105,11 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
+  # EKS Addons
   eks_addons = {
-    aws-ebs-csi-driver = {
-      most_recent              = true
-      service_account_role_arn = module.ebs_csi_driver_irsa.iam_role_arn
-    }
-    coredns = {
-      most_recent = true
-
-      timeouts = {
-        create = "25m"
-        delete = "10m"
-      }
-    }
-    vpc-cni = {
-      most_recent = true
-    }
+    coredns    = {}
     kube-proxy = {}
-    adot = {
-      most_recent              = true
-      service_account_role_arn = module.adot_irsa.iam_role_arn
-    }
-    aws-guardduty-agent = {}
+    vpc-cni    = {}
   }
 
   enable_aws_efs_csi_driver                    = true
@@ -149,14 +131,6 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_vpa                          = true
-  enable_fargate_fluentbit            = true
-  enable_aws_for_fluentbit            = true
-  aws_for_fluentbit = {
-    s3_bucket_arns = [
-      module.velero_backup_s3_bucket.s3_bucket_arn,
-      "${module.velero_backup_s3_bucket.s3_bucket_arn}/logs/*"
-    ]
-  }
 
   enable_aws_node_termination_handler   = true
   aws_node_termination_handler_asg_arns = [for asg in module.eks.self_managed_node_groups : asg.autoscaling_group_arn]
@@ -169,8 +143,14 @@ module "eks_blueprints_addons" {
   }
 
   enable_velero = true
-  ## An S3 Bucket ARN is required. This can be declared with or without a Prefix.
   velero = {
+    values = [
+      # https://github.com/vmware-tanzu/helm-charts/issues/698
+      <<-EOT
+        upgradeCRDs: false
+      EOT
+    ]
+    # An S3 Bucket ARN is required. This can be declared with or without a Prefix.
     s3_backup_location = "${module.velero_backup_s3_bucket.s3_bucket_arn}/backups"
   }
 
@@ -199,20 +179,6 @@ module "eks_blueprints_addons" {
           replicas: 2
           podDisruptionBudget:
             enabled: true
-        EOT
-      ]
-    }
-    gpu-operator = {
-      description      = "A Helm chart for NVIDIA GPU operator"
-      namespace        = "gpu-operator"
-      create_namespace = true
-      chart            = "gpu-operator"
-      chart_version    = "v23.3.2"
-      repository       = "https://nvidia.github.io/gpu-operator"
-      values = [
-        <<-EOT
-          operator:
-            defaultRuntime: containerd
         EOT
       ]
     }
@@ -289,24 +255,6 @@ module "velero_backup_s3_bucket" {
   tags = local.tags
 }
 
-module "ebs_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.20"
-
-  role_name_prefix = "${local.name}-ebs-csi-driver-"
-
-  attach_ebs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-    }
-  }
-
-  tags = local.tags
-}
-
 module "adot_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.20"
@@ -324,40 +272,6 @@ module "adot_irsa" {
       namespace_service_accounts = ["opentelemetry-operator-system:opentelemetry-operator"]
     }
   }
-
-  tags = local.tags
-}
-
-resource "aws_security_group" "guardduty" {
-  name        = "guardduty_vpce_allow_tls"
-  description = "Allow TLS inbound traffic"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    description = "TLS from VPC"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = local.tags
-}
-
-resource "aws_vpc_endpoint" "guardduty" {
-  vpc_id              = module.vpc.vpc_id
-  service_name        = "com.amazonaws.${local.region}.guardduty-data"
-  subnet_ids          = module.vpc.private_subnets
-  vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.guardduty.id]
-  private_dns_enabled = true
 
   tags = local.tags
 }
