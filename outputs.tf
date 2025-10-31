@@ -1,21 +1,21 @@
 output "argo_rollouts" {
   description = "Map of attributes of the Helm release created"
-  value       = module.argo_rollouts
+  value       = helm_release.argo_rollouts
 }
 
 output "argo_workflows" {
   description = "Map of attributes of the Helm release created"
-  value       = module.argo_workflows
+  value       = helm_release.argo_workflows
 }
 
 output "argocd" {
   description = "Map of attributes of the Helm release created"
-  value       = module.argocd
+  value       = helm_release.argocd
 }
 
 output "argo_events" {
   description = "Map of attributes of the Helm release created"
-  value       = module.argo_events
+  value       = helm_release.argo_events
 }
 
 output "aws_cloudwatch_metrics" {

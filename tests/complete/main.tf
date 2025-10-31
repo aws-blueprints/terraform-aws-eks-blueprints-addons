@@ -65,11 +65,17 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-  enable_aws_efs_csi_driver                    = true
-  enable_aws_fsx_csi_driver                    = true
-  enable_argocd                                = true
-  enable_argo_rollouts                         = true
-  enable_argo_workflows                        = true
+  enable_aws_efs_csi_driver = true
+  enable_aws_fsx_csi_driver = true
+  argocd = {
+    enable = true
+  }
+  argo_rollouts = {
+    enable = true
+  }
+  argo_workflows = {
+    enable = true
+  }
   enable_aws_cloudwatch_metrics                = true
   enable_aws_privateca_issuer                  = true
   enable_cluster_autoscaler                    = true

@@ -56,64 +56,332 @@ variable "helm_releases" {
 # Argo Rollouts
 ################################################################################
 
-variable "enable_argo_rollouts" {
-  description = "Enable Argo Rollouts add-on"
-  type        = bool
-  default     = false
-}
-
 variable "argo_rollouts" {
   description = "Argo Rollouts add-on configuration values"
-  type        = any
-  default     = {}
+  type = object({
+    enable = optional(bool, false)
+
+    # Helm release
+    # https://github.com/argoproj/argo-helm/tree/main/charts/argo-rollouts
+    atomic                     = optional(bool)
+    chart                      = optional(string, "argo-rollouts")
+    cleanup_on_fail            = optional(bool)
+    create_namespace           = optional(bool, true)
+    dependency_update          = optional(bool)
+    description                = optional(string, "A Helm chart for Argo Rollouts")
+    devel                      = optional(bool)
+    disable_crd_hooks          = optional(bool)
+    disable_openapi_validation = optional(bool)
+    disable_webhooks           = optional(bool)
+    force_update               = optional(bool)
+    keyring                    = optional(string)
+    lint                       = optional(bool)
+    max_history                = optional(number)
+    name                       = optional(string, "argo-rollouts")
+    namespace                  = optional(string, "argo-rollouts")
+    pass_credentials           = optional(bool)
+    postrender = optional(object({
+      args        = optional(list(string))
+      binary_path = string
+    }))
+    recreate_pods         = optional(bool)
+    render_subchart_notes = optional(bool)
+    replace               = optional(bool)
+    repository            = optional(string, "https://argoproj.github.io/argo-helm")
+    repository_ca_file    = optional(string)
+    repository_cert_file  = optional(string)
+    repository_key_file   = optional(string)
+    repository_password   = optional(string)
+    repository_username   = optional(string)
+    reset_values          = optional(bool)
+    reuse_values          = optional(bool)
+    set = optional(list(object({
+      name                  = string
+      type                  = optional(string)
+      value_is_iam_role_arn = optional(bool, false)
+      value                 = optional(string)
+    })))
+    set_list = optional(list(object({
+      name  = string
+      value = list(string)
+    })))
+    set_sensitive = optional(list(object({
+      name  = string
+      type  = optional(string)
+      value = string
+    })))
+    set_wo = optional(list(object({
+      name  = string
+      type  = optional(string)
+      value = string
+    })))
+    set_wo_revision = optional(number)
+    skip_crds       = optional(bool)
+    take_ownership  = optional(bool)
+    timeout         = optional(number)
+    upgrade_install = optional(bool)
+    values          = optional(list(string))
+    verify          = optional(bool)
+    chart_version   = optional(string, "2.40.5")
+    wait            = optional(bool)
+    wait_for_jobs   = optional(bool)
+    release_timeouts = optional(object({
+      create = optional(string)
+      read   = optional(string)
+      update = optional(string)
+      delete = optional(string)
+    }))
+  })
+  default = {}
 }
 
 ################################################################################
 # Argo Workflows
 ################################################################################
 
-variable "enable_argo_workflows" {
-  description = "Enable Argo workflows add-on"
-  type        = bool
-  default     = false
-}
-
 variable "argo_workflows" {
   description = "Argo Workflows add-on configuration values"
-  type        = any
-  default     = {}
+  type = object({
+    enable = optional(bool, false)
+
+    # Helm release
+    # https://github.com/argoproj/argo-helm/tree/main/charts/argo-workflows
+    atomic                     = optional(bool)
+    chart                      = optional(string, "argo-workflows")
+    cleanup_on_fail            = optional(bool)
+    create_namespace           = optional(bool, true)
+    dependency_update          = optional(bool)
+    description                = optional(string, "A Helm chart for Argo Workflows")
+    devel                      = optional(bool)
+    disable_crd_hooks          = optional(bool)
+    disable_openapi_validation = optional(bool)
+    disable_webhooks           = optional(bool)
+    force_update               = optional(bool)
+    keyring                    = optional(string)
+    lint                       = optional(bool)
+    max_history                = optional(number)
+    name                       = optional(string, "argo-workflows")
+    namespace                  = optional(string, "argo-workflows")
+    pass_credentials           = optional(bool)
+    postrender = optional(object({
+      args        = optional(list(string))
+      binary_path = string
+    }))
+    recreate_pods         = optional(bool)
+    render_subchart_notes = optional(bool)
+    replace               = optional(bool)
+    repository            = optional(string, "https://argoproj.github.io/argo-helm")
+    repository_ca_file    = optional(string)
+    repository_cert_file  = optional(string)
+    repository_key_file   = optional(string)
+    repository_password   = optional(string)
+    repository_username   = optional(string)
+    reset_values          = optional(bool)
+    reuse_values          = optional(bool)
+    set = optional(list(object({
+      name                  = string
+      type                  = optional(string)
+      value_is_iam_role_arn = optional(bool, false)
+      value                 = optional(string)
+    })))
+    set_list = optional(list(object({
+      name  = string
+      value = list(string)
+    })))
+    set_sensitive = optional(list(object({
+      name  = string
+      type  = optional(string)
+      value = string
+    })))
+    set_wo = optional(list(object({
+      name  = string
+      type  = optional(string)
+      value = string
+    })))
+    set_wo_revision = optional(number)
+    skip_crds       = optional(bool)
+    take_ownership  = optional(bool)
+    timeout         = optional(number)
+    upgrade_install = optional(bool)
+    values          = optional(list(string))
+    verify          = optional(bool)
+    chart_version   = optional(string, "0.45.27")
+    wait            = optional(bool)
+    wait_for_jobs   = optional(bool)
+    release_timeouts = optional(object({
+      create = optional(string)
+      read   = optional(string)
+      update = optional(string)
+      delete = optional(string)
+    }))
+  })
+  default = {}
 }
 
 ################################################################################
 # ArgoCD
 ################################################################################
 
-variable "enable_argocd" {
-  description = "Enable Argo CD Kubernetes add-on"
-  type        = bool
-  default     = false
-}
-
 variable "argocd" {
   description = "ArgoCD add-on configuration values"
-  type        = any
-  default     = {}
+  type = object({
+    enable = optional(bool, false)
+
+    # Helm release
+    # https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd
+    atomic                     = optional(bool)
+    chart                      = optional(string, "argo-cd")
+    cleanup_on_fail            = optional(bool)
+    create_namespace           = optional(bool, true)
+    dependency_update          = optional(bool)
+    description                = optional(string, "A Helm chart for Argo CD")
+    devel                      = optional(bool)
+    disable_crd_hooks          = optional(bool)
+    disable_openapi_validation = optional(bool)
+    disable_webhooks           = optional(bool)
+    force_update               = optional(bool)
+    keyring                    = optional(string)
+    lint                       = optional(bool)
+    max_history                = optional(number)
+    name                       = optional(string, "argo-cd")
+    namespace                  = optional(string, "argo-cd")
+    pass_credentials           = optional(bool)
+    postrender = optional(object({
+      args        = optional(list(string))
+      binary_path = string
+    }))
+    recreate_pods         = optional(bool)
+    render_subchart_notes = optional(bool)
+    replace               = optional(bool)
+    repository            = optional(string, "https://argoproj.github.io/argo-helm")
+    repository_ca_file    = optional(string)
+    repository_cert_file  = optional(string)
+    repository_key_file   = optional(string)
+    repository_password   = optional(string)
+    repository_username   = optional(string)
+    reset_values          = optional(bool)
+    reuse_values          = optional(bool)
+    set = optional(list(object({
+      name                  = string
+      type                  = optional(string)
+      value_is_iam_role_arn = optional(bool, false)
+      value                 = optional(string)
+    })))
+    set_list = optional(list(object({
+      name  = string
+      value = list(string)
+    })))
+    set_sensitive = optional(list(object({
+      name  = string
+      type  = optional(string)
+      value = string
+    })))
+    set_wo = optional(list(object({
+      name  = string
+      type  = optional(string)
+      value = string
+    })))
+    set_wo_revision = optional(number)
+    skip_crds       = optional(bool)
+    take_ownership  = optional(bool)
+    timeout         = optional(number)
+    upgrade_install = optional(bool)
+    values          = optional(list(string))
+    verify          = optional(bool)
+    chart_version   = optional(string, "9.0.5")
+    wait            = optional(bool)
+    wait_for_jobs   = optional(bool)
+    release_timeouts = optional(object({
+      create = optional(string)
+      read   = optional(string)
+      update = optional(string)
+      delete = optional(string)
+    }))
+  })
+  default = {}
 }
 
 ################################################################################
 # Argo Events
 ################################################################################
 
-variable "enable_argo_events" {
-  description = "Enable Argo Events add-on"
-  type        = bool
-  default     = false
-}
-
 variable "argo_events" {
   description = "Argo Events add-on configuration values"
-  type        = any
-  default     = {}
+  type = object({
+    enable = optional(bool, false)
+
+    # Helm release
+    # https://github.com/argoproj/argo-helm/tree/main/charts/argo-events
+    atomic                     = optional(bool)
+    chart                      = optional(string, "argo-events")
+    cleanup_on_fail            = optional(bool)
+    create_namespace           = optional(bool, true)
+    dependency_update          = optional(bool)
+    description                = optional(string, "A Helm chart for Argo Events")
+    devel                      = optional(bool)
+    disable_crd_hooks          = optional(bool)
+    disable_openapi_validation = optional(bool)
+    disable_webhooks           = optional(bool)
+    force_update               = optional(bool)
+    keyring                    = optional(string)
+    lint                       = optional(bool)
+    max_history                = optional(number)
+    name                       = optional(string, "argo-events")
+    namespace                  = optional(string, "argo-events")
+    pass_credentials           = optional(bool)
+    postrender = optional(object({
+      args        = optional(list(string))
+      binary_path = string
+    }))
+    recreate_pods         = optional(bool)
+    render_subchart_notes = optional(bool)
+    replace               = optional(bool)
+    repository            = optional(string, "https://argoproj.github.io/argo-helm")
+    repository_ca_file    = optional(string)
+    repository_cert_file  = optional(string)
+    repository_key_file   = optional(string)
+    repository_password   = optional(string)
+    repository_username   = optional(string)
+    reset_values          = optional(bool)
+    reuse_values          = optional(bool)
+    set = optional(list(object({
+      name                  = string
+      type                  = optional(string)
+      value_is_iam_role_arn = optional(bool, false)
+      value                 = optional(string)
+    })))
+    set_list = optional(list(object({
+      name  = string
+      value = list(string)
+    })))
+    set_sensitive = optional(list(object({
+      name  = string
+      type  = optional(string)
+      value = string
+    })))
+    set_wo = optional(list(object({
+      name  = string
+      type  = optional(string)
+      value = string
+    })))
+    set_wo_revision = optional(number)
+    skip_crds       = optional(bool)
+    take_ownership  = optional(bool)
+    timeout         = optional(number)
+    upgrade_install = optional(bool)
+    values          = optional(list(string))
+    verify          = optional(bool)
+    chart_version   = optional(string, "2.4.16")
+    wait            = optional(bool)
+    wait_for_jobs   = optional(bool)
+    release_timeouts = optional(object({
+      create = optional(string)
+      read   = optional(string)
+      update = optional(string)
+      delete = optional(string)
+    }))
+  })
+  default = {}
 }
 
 ################################################################################
