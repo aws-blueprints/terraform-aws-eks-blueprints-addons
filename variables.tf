@@ -43,80 +43,6 @@ variable "enable_eks_fargate" {
 }
 
 ################################################################################
-# (Generic) Helm Release
-################################################################################
-
-variable "helm_releases" {
-  description = "A map of Helm releases to create. This provides the ability to pass in an arbitrary map of Helm chart definitions to create"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# Argo Rollouts
-################################################################################
-
-variable "enable_argo_rollouts" {
-  description = "Enable Argo Rollouts add-on"
-  type        = bool
-  default     = false
-}
-
-variable "argo_rollouts" {
-  description = "Argo Rollouts add-on configuration values"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# Argo Workflows
-################################################################################
-
-variable "enable_argo_workflows" {
-  description = "Enable Argo workflows add-on"
-  type        = bool
-  default     = false
-}
-
-variable "argo_workflows" {
-  description = "Argo Workflows add-on configuration values"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# ArgoCD
-################################################################################
-
-variable "enable_argocd" {
-  description = "Enable Argo CD Kubernetes add-on"
-  type        = bool
-  default     = false
-}
-
-variable "argocd" {
-  description = "ArgoCD add-on configuration values"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# Argo Events
-################################################################################
-
-variable "enable_argo_events" {
-  description = "Enable Argo Events add-on"
-  type        = bool
-  default     = false
-}
-
-variable "argo_events" {
-  description = "Argo Events add-on configuration values"
-  type        = any
-  default     = {}
-}
-
-################################################################################
 # AWS Cloudwatch Metrics
 ################################################################################
 
@@ -144,28 +70,6 @@ variable "enable_aws_efs_csi_driver" {
 
 variable "aws_efs_csi_driver" {
   description = "EFS CSI Driver add-on configuration values"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# AWS for Fluentbit
-################################################################################
-
-variable "enable_aws_for_fluentbit" {
-  description = "Enable AWS for FluentBit add-on"
-  type        = bool
-  default     = false
-}
-
-variable "aws_for_fluentbit" {
-  description = "AWS Fluentbit add-on configurations"
-  type        = any
-  default     = {}
-}
-
-variable "aws_for_fluentbit_cw_log_group" {
-  description = "AWS Fluentbit CloudWatch Log Group configurations"
   type        = any
   default     = {}
 }
@@ -291,38 +195,6 @@ variable "cluster_autoscaler" {
 }
 
 ################################################################################
-# Cluster Proportional Autoscaler
-################################################################################
-
-variable "enable_cluster_proportional_autoscaler" {
-  description = "Enable Cluster Proportional Autoscaler"
-  type        = bool
-  default     = false
-}
-
-variable "cluster_proportional_autoscaler" {
-  description = "Cluster Proportional Autoscaler add-on configurations"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# EKS Add-ons
-################################################################################
-
-variable "eks_addons" {
-  description = "Map of EKS add-on configurations to enable for the cluster. Add-on name can be the map keys or set with `name`"
-  type        = any
-  default     = {}
-}
-
-variable "eks_addons_timeouts" {
-  description = "Create, update, and delete timeout configurations for the EKS add-ons"
-  type        = map(string)
-  default     = {}
-}
-
-################################################################################
 # External DNS
 ################################################################################
 
@@ -379,60 +251,6 @@ variable "external_secrets_kms_key_arns" {
 }
 
 ################################################################################
-# Fargate Fluentbit
-################################################################################
-
-variable "enable_fargate_fluentbit" {
-  description = "Enable Fargate FluentBit add-on"
-  type        = bool
-  default     = false
-}
-
-variable "fargate_fluentbit_cw_log_group" {
-  description = "AWS Fargate Fluentbit CloudWatch Log Group configurations"
-  type        = any
-  default     = {}
-}
-
-variable "fargate_fluentbit" {
-  description = "Fargate fluentbit add-on config"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# Gatekeeper
-################################################################################
-
-variable "enable_gatekeeper" {
-  description = "Enable Gatekeeper add-on"
-  type        = bool
-  default     = false
-}
-
-variable "gatekeeper" {
-  description = "Gatekeeper add-on configuration"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# Ingress Nginx
-################################################################################
-
-variable "enable_ingress_nginx" {
-  description = "Enable Ingress Nginx"
-  type        = bool
-  default     = false
-}
-
-variable "ingress_nginx" {
-  description = "Ingress Nginx add-on configurations"
-  type        = any
-  default     = {}
-}
-
-################################################################################
 # Karpenter
 ################################################################################
 
@@ -473,70 +291,6 @@ variable "karpenter_node" {
 }
 
 ################################################################################
-# Kube Prometheus Stack
-################################################################################
-
-variable "enable_kube_prometheus_stack" {
-  description = "Enable Kube Prometheus Stack"
-  type        = bool
-  default     = false
-}
-
-variable "kube_prometheus_stack" {
-  description = "Kube Prometheus Stack add-on configurations"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# Metrics Server
-################################################################################
-
-variable "enable_metrics_server" {
-  description = "Enable metrics server add-on"
-  type        = bool
-  default     = false
-}
-
-variable "metrics_server" {
-  description = "Metrics Server add-on configurations"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# Secrets Store CSI Driver
-################################################################################
-
-variable "enable_secrets_store_csi_driver" {
-  description = "Enable CSI Secrets Store Provider"
-  type        = bool
-  default     = false
-}
-
-variable "secrets_store_csi_driver" {
-  description = "CSI Secrets Store Provider add-on configurations"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# CSI Secrets Store Provider AWS
-################################################################################
-
-variable "enable_secrets_store_csi_driver_provider_aws" {
-  description = "Enable AWS CSI Secrets Store Provider"
-  type        = bool
-  default     = false
-}
-
-variable "secrets_store_csi_driver_provider_aws" {
-  description = "CSI Secrets Store Provider add-on configurations"
-  type        = any
-  default     = {}
-}
-
-################################################################################
 # Velero
 ################################################################################
 
@@ -553,22 +307,6 @@ variable "velero" {
 }
 
 ################################################################################
-# Vertical Pod Autoscaler
-################################################################################
-
-variable "enable_vpa" {
-  description = "Enable Vertical Pod Autoscaler add-on"
-  type        = bool
-  default     = false
-}
-
-variable "vpa" {
-  description = "Vertical Pod Autoscaler add-on configuration values"
-  type        = any
-  default     = {}
-}
-
-################################################################################
 #  AWS Gateway API Controller
 ################################################################################
 
@@ -580,28 +318,6 @@ variable "enable_aws_gateway_api_controller" {
 
 variable "aws_gateway_api_controller" {
   description = "AWS Gateway API Controller add-on configuration values"
-  type        = any
-  default     = {}
-}
-
-################################################################################
-# Bottlerocket Update Operator
-################################################################################
-
-variable "enable_bottlerocket_update_operator" {
-  description = "Enable Bottlerocket Update Operator add-on"
-  type        = bool
-  default     = false
-}
-
-variable "bottlerocket_update_operator" {
-  description = "Bottlerocket Update Operator add-on configuration values"
-  type        = any
-  default     = {}
-}
-
-variable "bottlerocket_shadow" {
-  description = "Bottlerocket Update Operator CRDs configuration values"
   type        = any
   default     = {}
 }

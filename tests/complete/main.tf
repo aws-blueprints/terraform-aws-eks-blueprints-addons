@@ -65,17 +65,11 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-  enable_aws_efs_csi_driver                    = true
-  enable_aws_fsx_csi_driver                    = true
-  enable_argocd                                = true
-  enable_argo_rollouts                         = true
-  enable_argo_workflows                        = true
-  enable_aws_cloudwatch_metrics                = true
-  enable_aws_privateca_issuer                  = true
-  enable_cluster_autoscaler                    = true
-  enable_secrets_store_csi_driver              = true
-  enable_secrets_store_csi_driver_provider_aws = true
-  enable_kube_prometheus_stack                 = true
+  enable_aws_efs_csi_driver     = true
+  enable_aws_fsx_csi_driver     = true
+  enable_aws_cloudwatch_metrics = true
+  enable_aws_privateca_issuer   = true
+  enable_cluster_autoscaler     = true
 
   enable_external_dns = true
   external_dns_route53_zone_arns = [
@@ -83,8 +77,6 @@ module "eks_blueprints_addons" {
   ]
 
   enable_external_secrets = true
-  enable_gatekeeper       = true
-  enable_ingress_nginx    = true
 
   # Wait for all Cert-manager related resources to be ready
   enable_cert_manager = true
@@ -99,39 +91,6 @@ module "eks_blueprints_addons" {
       name  = "enableServiceMutatorWebhook"
       value = "false"
     }]
-  }
-
-  enable_metrics_server    = true
-  enable_vpa               = true
-  enable_fargate_fluentbit = true
-  enable_aws_for_fluentbit = true
-  aws_for_fluentbit_cw_log_group = {
-    create          = true
-    use_name_prefix = true # Set this to true to enable name prefix
-    name_prefix     = "eks-cluster-logs-"
-    retention       = 7
-  }
-  aws_for_fluentbit = {
-    enable_containerinsights = true
-    kubelet_monitoring       = true
-    chart_version            = "0.1.28"
-    set = [{
-      name  = "cloudWatchLogs.autoCreateGroup"
-      value = true
-      },
-      {
-        name  = "hostNetwork"
-        value = true
-      },
-      {
-        name  = "dnsPolicy"
-        value = "ClusterFirstWithHostNet"
-      }
-    ]
-    s3_bucket_arns = [
-      module.velero_backup_s3_bucket.s3_bucket_arn,
-      "${module.velero_backup_s3_bucket.s3_bucket_arn}/logs/*"
-    ]
   }
 
   enable_aws_node_termination_handler   = true
@@ -168,27 +127,6 @@ module "eks_blueprints_addons" {
       name  = "clusterVpcId"
       value = module.vpc.vpc_id
     }]
-  }
-
-  enable_bottlerocket_update_operator = true
-
-  # Pass in any number of Helm charts to be created for those that are not natively supported
-  helm_releases = {
-    prometheus-adapter = {
-      description      = "A Helm chart for k8s prometheus adapter"
-      namespace        = "prometheus-adapter"
-      create_namespace = true
-      chart            = "prometheus-adapter"
-      chart_version    = "4.2.0"
-      repository       = "https://prometheus-community.github.io/helm-charts"
-      values = [
-        <<-EOT
-          replicas: 2
-          podDisruptionBudget:
-            enabled: true
-        EOT
-      ]
-    }
   }
 
   tags = local.tags
