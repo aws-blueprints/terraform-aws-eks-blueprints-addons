@@ -307,22 +307,6 @@ variable "cluster_proportional_autoscaler" {
 }
 
 ################################################################################
-# EKS Add-ons
-################################################################################
-
-variable "eks_addons" {
-  description = "Map of EKS add-on configurations to enable for the cluster. Add-on name can be the map keys or set with `name`"
-  type        = any
-  default     = {}
-}
-
-variable "eks_addons_timeouts" {
-  description = "Create, update, and delete timeout configurations for the EKS add-ons"
-  type        = map(string)
-  default     = {}
-}
-
-################################################################################
 # External DNS
 ################################################################################
 

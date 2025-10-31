@@ -49,9 +49,4 @@ resource "helm_release" "this" {
   version                    = each.value.chart_version # conflicts with reserved keyword
   wait                       = each.value.wait
   wait_for_jobs              = each.value.wait_for_jobs
-
-  depends_on = [
-    # Wait for EBS CSI, etc. to be installed first
-    aws_eks_addon.this,
-  ]
 }

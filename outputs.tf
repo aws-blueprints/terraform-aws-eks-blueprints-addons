@@ -73,11 +73,6 @@ output "cluster_proportional_autoscaler" {
   value       = module.cluster_proportional_autoscaler
 }
 
-output "eks_addons" {
-  description = "Map of attributes for each EKS addons enabled"
-  value       = aws_eks_addon.this
-}
-
 output "external_dns" {
   description = "Map of attributes of the Helm release and IRSA created"
   value       = module.external_dns
