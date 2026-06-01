@@ -342,7 +342,7 @@ module "aws_efs_csi_driver" {
   role_policies                 = lookup(var.aws_efs_csi_driver, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.aws_efs_csi_driver[*].json
-  policy_statements       = lookup(var.aws_efs_csi_driver, "policy_statements", [])
+  policy_statements       = lookup(var.aws_efs_csi_driver, "policy_statements", {})
   policy_name             = try(var.aws_efs_csi_driver.policy_name, null)
   policy_name_use_prefix  = try(var.aws_efs_csi_driver.policy_name_use_prefix, true)
   policy_path             = try(var.aws_efs_csi_driver.policy_path, null)
@@ -502,7 +502,7 @@ module "aws_fsx_csi_driver" {
   role_policies                 = lookup(var.aws_fsx_csi_driver, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.aws_fsx_csi_driver[*].json
-  policy_statements       = lookup(var.aws_fsx_csi_driver, "policy_statements", [])
+  policy_statements       = lookup(var.aws_fsx_csi_driver, "policy_statements", {})
   policy_name             = try(var.aws_fsx_csi_driver.policy_name, "aws-fsx-csi-driver")
   policy_name_use_prefix  = try(var.aws_fsx_csi_driver.policy_name_use_prefix, true)
   policy_path             = try(var.aws_fsx_csi_driver.policy_path, null)
@@ -870,7 +870,7 @@ module "aws_load_balancer_controller" {
   role_policies                 = lookup(var.aws_load_balancer_controller, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.aws_load_balancer_controller[*].json
-  policy_statements       = lookup(var.aws_load_balancer_controller, "policy_statements", [])
+  policy_statements       = lookup(var.aws_load_balancer_controller, "policy_statements", {})
   policy_name             = try(var.aws_load_balancer_controller.policy_name, null)
   policy_name_use_prefix  = try(var.aws_load_balancer_controller.policy_name_use_prefix, true)
   policy_path             = try(var.aws_load_balancer_controller.policy_path, null)
@@ -1099,7 +1099,7 @@ module "aws_node_termination_handler" {
   role_policies                 = lookup(var.aws_node_termination_handler, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.aws_node_termination_handler[*].json
-  policy_statements       = lookup(var.aws_node_termination_handler, "policy_statements", [])
+  policy_statements       = lookup(var.aws_node_termination_handler, "policy_statements", {})
   policy_name             = try(var.aws_node_termination_handler.policy_name, null)
   policy_name_use_prefix  = try(var.aws_node_termination_handler.policy_name_use_prefix, true)
   policy_path             = try(var.aws_node_termination_handler.policy_path, null)
@@ -1209,7 +1209,7 @@ module "aws_privateca_issuer" {
   role_policies                 = lookup(var.aws_privateca_issuer, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.aws_privateca_issuer[*].json
-  policy_statements       = lookup(var.aws_privateca_issuer, "policy_statements", [])
+  policy_statements       = lookup(var.aws_privateca_issuer, "policy_statements", {})
   policy_name             = try(var.aws_privateca_issuer.policy_name, "aws-privateca-issuer")
   policy_name_use_prefix  = try(var.aws_privateca_issuer.policy_name_use_prefix, true)
   policy_path             = try(var.aws_privateca_issuer.policy_path, null)
@@ -1331,7 +1331,7 @@ module "cert_manager" {
   role_policies                 = lookup(var.cert_manager, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.cert_manager[*].json
-  policy_statements       = lookup(var.cert_manager, "policy_statements", [])
+  policy_statements       = lookup(var.cert_manager, "policy_statements", {})
   policy_name             = try(var.cert_manager.policy_name, null)
   policy_name_use_prefix  = try(var.cert_manager.policy_name_use_prefix, true)
   policy_path             = try(var.cert_manager.policy_path, null)
@@ -1495,7 +1495,7 @@ module "cluster_autoscaler" {
   role_policies                 = lookup(var.cluster_autoscaler, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.cluster_autoscaler[*].json
-  policy_statements       = lookup(var.cluster_autoscaler, "policy_statements", [])
+  policy_statements       = lookup(var.cluster_autoscaler, "policy_statements", {})
   policy_name             = try(var.cluster_autoscaler.policy_name, null)
   policy_name_use_prefix  = try(var.cluster_autoscaler.policy_name_use_prefix, true)
   policy_path             = try(var.cluster_autoscaler.policy_path, null)
@@ -1611,7 +1611,7 @@ module "external_dns" {
   role_policies                 = lookup(var.external_dns, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.external_dns[*].json
-  policy_statements       = lookup(var.external_dns, "policy_statements", [])
+  policy_statements       = lookup(var.external_dns, "policy_statements", {})
   policy_name             = try(var.external_dns.policy_name, null)
   policy_name_use_prefix  = try(var.external_dns.policy_name_use_prefix, true)
   policy_path             = try(var.external_dns.policy_path, null)
@@ -1767,7 +1767,7 @@ module "external_secrets" {
   role_policies                 = lookup(var.external_secrets, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.external_secrets[*].json
-  policy_statements       = lookup(var.external_secrets, "policy_statements", [])
+  policy_statements       = lookup(var.external_secrets, "policy_statements", {})
   policy_name             = try(var.external_secrets.policy_name, null)
   policy_name_use_prefix  = try(var.external_secrets.policy_name_use_prefix, true)
   policy_path             = try(var.external_secrets.policy_path, null)
@@ -2118,7 +2118,7 @@ module "karpenter" {
   role_policies                 = lookup(var.karpenter, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.karpenter[*].json
-  policy_statements       = lookup(var.karpenter, "policy_statements", [])
+  policy_statements       = lookup(var.karpenter, "policy_statements", {})
   policy_name             = try(var.karpenter.policy_name, null)
   policy_name_use_prefix  = try(var.karpenter.policy_name_use_prefix, true)
   policy_path             = try(var.karpenter.policy_path, null)
@@ -2296,7 +2296,7 @@ module "velero" {
   role_policies                 = lookup(var.velero, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.velero[*].json
-  policy_statements       = lookup(var.velero, "policy_statements", [])
+  policy_statements       = lookup(var.velero, "policy_statements", {})
   policy_name             = try(var.velero.policy_name, "velero")
   policy_name_use_prefix  = try(var.velero.policy_name_use_prefix, true)
   policy_path             = try(var.velero.policy_path, null)
@@ -2420,7 +2420,7 @@ module "aws_gateway_api_controller" {
   role_policies                 = lookup(var.aws_gateway_api_controller, "role_policies", {})
 
   source_policy_documents = data.aws_iam_policy_document.aws_gateway_api_controller[*].json
-  policy_statements       = lookup(var.aws_gateway_api_controller, "policy_statements", [])
+  policy_statements       = lookup(var.aws_gateway_api_controller, "policy_statements", {})
   policy_name             = try(var.aws_gateway_api_controller.policy_name, null)
   policy_name_use_prefix  = try(var.aws_gateway_api_controller.policy_name_use_prefix, true)
   policy_path             = try(var.aws_gateway_api_controller.policy_path, null)
