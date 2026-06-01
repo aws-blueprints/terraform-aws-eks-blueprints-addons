@@ -2101,10 +2101,10 @@ module "karpenter" {
   postrender = try(var.karpenter.postrender, null)
   set = concat(
     [for s in local.karpenter_set : s if s.value != null],
-    {
+    [{
       name                  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
       value_is_iam_role_arn = true
-    },
+    }],
     try(var.karpenter.set, [])
   )
   set_sensitive = try(var.karpenter.set_sensitive, [])
