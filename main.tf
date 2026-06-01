@@ -143,7 +143,7 @@ module "aws_cloudwatch_metrics" {
   replace                    = try(var.aws_cloudwatch_metrics.replace, null)
   lint                       = try(var.aws_cloudwatch_metrics.lint, null)
 
-  postrender = try(var.aws_cloudwatch_metrics.postrender, [])
+  postrender = try(var.aws_cloudwatch_metrics.postrender, null)
   set = concat(
     [
       {
@@ -311,7 +311,7 @@ module "aws_efs_csi_driver" {
   replace                    = try(var.aws_efs_csi_driver.replace, null)
   lint                       = try(var.aws_efs_csi_driver.lint, null)
 
-  postrender = try(var.aws_efs_csi_driver.postrender, [])
+  postrender = try(var.aws_efs_csi_driver.postrender, null)
   set = concat([
     {
       name  = "controller.serviceAccount.name"
@@ -471,7 +471,7 @@ module "aws_fsx_csi_driver" {
   replace                    = try(var.aws_fsx_csi_driver.replace, null)
   lint                       = try(var.aws_fsx_csi_driver.lint, null)
 
-  postrender = try(var.aws_fsx_csi_driver.postrender, [])
+  postrender = try(var.aws_fsx_csi_driver.postrender, null)
   set = concat([
     {
       name  = "controller.serviceAccount.name"
@@ -843,7 +843,7 @@ module "aws_load_balancer_controller" {
   replace                    = try(var.aws_load_balancer_controller.replace, null)
   lint                       = try(var.aws_load_balancer_controller.lint, null)
 
-  postrender = try(var.aws_load_balancer_controller.postrender, [])
+  postrender = try(var.aws_load_balancer_controller.postrender, null)
   set = concat([
     {
       name  = "serviceAccount.name"
@@ -1063,7 +1063,7 @@ module "aws_node_termination_handler" {
   replace                    = try(var.aws_node_termination_handler.replace, null)
   lint                       = try(var.aws_node_termination_handler.lint, null)
 
-  postrender = try(var.aws_node_termination_handler.postrender, [])
+  postrender = try(var.aws_node_termination_handler.postrender, null)
   set = concat(
     [
       {
@@ -1186,7 +1186,7 @@ module "aws_privateca_issuer" {
   replace                    = try(var.aws_privateca_issuer.replace, null)
   lint                       = try(var.aws_privateca_issuer.lint, null)
 
-  postrender = try(var.aws_privateca_issuer.postrender, [])
+  postrender = try(var.aws_privateca_issuer.postrender, null)
   set = concat([
     {
       name  = "serviceAccount.name"
@@ -1303,7 +1303,7 @@ module "cert_manager" {
   replace                    = try(var.cert_manager.replace, null)
   lint                       = try(var.cert_manager.lint, null)
 
-  postrender = try(var.cert_manager.postrender, [])
+  postrender = try(var.cert_manager.postrender, null)
   set = concat([
     {
       name  = "installCRDs"
@@ -1458,7 +1458,7 @@ module "cluster_autoscaler" {
   replace                    = try(var.cluster_autoscaler.replace, null)
   lint                       = try(var.cluster_autoscaler.lint, null)
 
-  postrender = try(var.cluster_autoscaler.postrender, [])
+  postrender = try(var.cluster_autoscaler.postrender, null)
   set = concat(
     [
       {
@@ -1588,7 +1588,7 @@ module "external_dns" {
   replace                    = try(var.external_dns.replace, null)
   lint                       = try(var.external_dns.lint, null)
 
-  postrender = try(var.external_dns.postrender, [])
+  postrender = try(var.external_dns.postrender, null)
   set = concat([
     {
       name  = "serviceAccount.name"
@@ -1740,7 +1740,7 @@ module "external_secrets" {
   replace                    = try(var.external_secrets.replace, null)
   lint                       = try(var.external_secrets.lint, null)
 
-  postrender = try(var.external_secrets.postrender, [])
+  postrender = try(var.external_secrets.postrender, null)
   set = concat([
     {
       name  = "serviceAccount.name"
@@ -2098,7 +2098,7 @@ module "karpenter" {
   replace                    = try(var.karpenter.replace, null)
   lint                       = try(var.karpenter.lint, null)
 
-  postrender = try(var.karpenter.postrender, [])
+  postrender = try(var.karpenter.postrender, null)
   set = concat(
     [for s in local.karpenter_set : s if s.value != null],
     {
@@ -2238,7 +2238,7 @@ module "velero" {
   replace                    = try(var.velero.replace, null)
   lint                       = try(var.velero.lint, null)
 
-  postrender = try(var.velero.postrender, [])
+  postrender = try(var.velero.postrender, null)
   set = concat([
     {
       name  = "initContainers"
@@ -2389,7 +2389,7 @@ module "aws_gateway_api_controller" {
   replace                    = try(var.aws_gateway_api_controller.replace, null)
   lint                       = try(var.aws_gateway_api_controller.lint, null)
 
-  postrender = try(var.aws_gateway_api_controller.postrender, [])
+  postrender = try(var.aws_gateway_api_controller.postrender, null)
   set = concat([
     {
       name  = "serviceAccount.name"
